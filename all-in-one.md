@@ -71,7 +71,7 @@ Then wait for Contabo to send you the login info in you email.
 
 Use any SSH client you want (e.g. Terminal, [Putty](https://www.putty.org/), [Termius](https://termius.com/)...) to login to your VPS.
 
-**Image screen Ubuntu**
+![ubuntu-screen.jpg](/images/challenge1/ubuntu-screen.jpg)
 
 **Step 3. Config environments, setup dependencies to install NEAR**
 
