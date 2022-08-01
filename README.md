@@ -15,4 +15,5 @@ This guide have 4 parts
 * [WRAPED - BUNDLE GUIDE](/all-in-one.md)
 
 ###TOTAL TIME TO SETUP: ~ 2 hours
+
 ###TOTAL PRICE TO RUN A VALIDATOR NODE: $11.99
