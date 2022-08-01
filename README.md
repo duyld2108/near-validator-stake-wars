@@ -99,3 +99,79 @@ lscpu | grep -P '(?=.*avx )(?=.*sse4.2 )(?=.*cx16 )(?=.*popcnt )' > /dev/null \
   && echo "Supported" \
   || echo "Not supported"
 ```
+![C2-check-cpu-support.jpg](/images/C2-check-cpu-support.jpg)
+
+The result is **"Supported"** then you good to go
+
+***Next install developer tools***
+```
+sudo apt install -y git binutils-dev libcurl4-openssl-dev zlib1g-dev libdw-dev libiberty-dev cmake gcc g++ python docker.io protobuf-compiler libssl-dev pkg-config clang llvm cargo
+```
+![C2-install-developer-tools.jpg](/images/C2-install-developer-tools.jpg)
+
+***Next, install the Python pip***
+```
+sudo apt install -y python3-pip
+```
+![C2-install-python-pip.jpg](/images/C2-install-python-pip.jpg)
+
+***Continue, set the Configuration***
+```
+USER_BASE_BIN=$(python3 -m site --user-base)/bin
+export PATH="$USER_BASE_BIN:$PATH"
+```
+![C2-set-the-configuration.jpg](/images/C2-set-the-configuration.jpg)
+
+***Install Building env***
+```
+sudo apt install -y clang build-essential make
+```
+![C2-install-building-env.jpg](/images/C2-install-building-env.jpg)
+
+***Next, Install Rush & Cargo***
+```
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+![C2-install-rush-and-cargo.jpg](/images/C2-install-rush-and-cargo.jpg)
+
+Hit **"Y"** and **Enter**
+
+![C2-install-rush-and-cargo-2.jpg](/images/C2-install-rush-and-cargo-2.jpg)
+
+Enter **"1"** then **Enter**
+
+![C2-install-rush-and-cargo-3.jpg](/images/C2-install-rush-and-cargo-3.jpg)
+
+Then Source the environment
+
+![C2-install-rush-and-cargo-4.jpg](/images/C2-install-rush-and-cargo-4.jpg)
+
+***Clone Nearcore Project from GitHub***
+
+First, clone the nearcore repository
+```
+git clone https://github.com/near/nearcore
+cd nearcore
+git fetch
+```
+![C2-clone-nearcore](/images/C2-clone-nearcore.jpg)
+
+Checkout to the commit needed. Please refer to the commit defined in [this file](https://github.com/near/stakewars-iii/blob/main/commit.md).
+```
+git checkout <commit>
+```
+At this time (Aug 1st, 2022), it will be
+```
+git checkout c1b047b8187accbf6bd16539feb7bb60185bdc38
+```
+![C2-git-checkout.jpg](/images/C2-git-checkout.jpg)
+
+***Compile Nearcore binany***
+```
+cargo build -p neard --release --features shardnet
+```
+![C2-compile-nearcore](/images/C2-compile-nearcore.jpg)
+
+It will take 7-10 minutes to complete
+
+![C2-compile-nearcore-2](/images/C2-compile-nearcore-2.jpg)
