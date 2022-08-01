@@ -35,13 +35,11 @@ After **SHARDNET** account created, you will receive **50 NEAR** to join network
 
 First, you need rent a VPS with minimum requirements
 
-**Hardware**: Chunk-Only Producer Specifications
-
-**CPU**: 4-Core CPU with AVX support
-
-**RAM**: 8GB DDR4
-
-**Storage**: 500GB SSD
+| Hardware       | Chunk-Only Producer  Specifications                                   |
+| -------------- | ---------------------------------------------------------------       |
+| CPU            | 4-Core CPU with AVX support                                           |
+| RAM            | 8GB DDR4                                                              |
+| Storage        | 500GB SSD                                                             |
 
 Use any SSH client you want (eg. Terminal, Putty, Termius...) to login to your VPS.
 
@@ -175,3 +173,135 @@ cargo build -p neard --release --features shardnet
 It will take 7-10 minutes to complete
 
 ![C2-compile-nearcore-2](/images/C2-compile-nearcore-2.jpg)
+
+***Initialize working directory***
+```
+./target/release/neard --home ~/.near init --chain-id shardnet --download-genesis
+```
+![C2-initialize-working-directory.jpg](/images/C2-initialize-working-directory.jpg)
+
+Replace the config.json
+```
+rm ~/.near/config.json
+wget -O ~/.near/config.json https://s3-us-west-1.amazonaws.com/build.nearprotocol.com/nearcore-deploy/shardnet/config.json
+```
+![C2-replace-config-json.jpg](/images/C2-replace-config-json.jpg)
+
+**At this time, because after Hardfork on Shardnet during 2022-07-18, we not required to get the lastest snapshot**
+
+***Run the Node***
+
+Come back to nearcore folder
+```
+cd ~/nearcore
+```
+It takes time to run and sync the node to the actual state, so to keep it running I use **tmux**
+```
+sudo apt install -y tmux
+```
+![C2-install-tmux.jpg](/images/C2-install-tmux.jpg)
+
+Then call tmux
+```
+tmux
+```
+It will show up like this
+![C2-tmux-screen.jpg](/images/C2-tmux-screen.jpg)
+
+> If you are not at nearcore folder, you have to move to that folder using this command (cd ~/nearcore)
+
+then run the node with this command:
+```
+./target/release/neard --home ~/.near run
+```
+![C2-downloading-headers.jpg](/images/C2-downloading-headers.jpg)
+
+while wait the node to fully sync, we will do next step. But first we have to **detach tmux** by hit **Ctrl + B**, then press **D** (if you use the MacOS, you have to hit Command and B at the same time then let go and hit D) then we can detact the tmux session.
+
+![C2-tmux-detached.jpg](/images/C2-tmux-detached.jpg)
+
+** NEXT: We activation the node as validator**
+
+A full access key needs to be installed locally to be able to sign transactions via NEAR-CLI.
+
+Run this commad
+```
+near login
+```
+![C2-near-login.jpg](/images/C2-near-login.jpg)
+
+Hit **"Y"** and **Enter**
+
+Then copy the URL, paste it in the browser (which we have created/login the wallet before)
+
+![C2-near-login-2.jpg](/images/C2-near-login-2.jpg)
+
+Then hit **"Next"** and **"Connect"**
+
+![C2-near-login-3.jpg](/images/C2-near-login-3.jpg)
+
+enter your account wallet (eg. _xx_.shardnet.near) and hit **"Confirm"**
+
+![C2-near-login-4.jpg](/images/C2-near-login-4.jpg)
+
+The browser will show up like this
+
+![C2-near-login-local.jpg](/images/C2-near-login-local.jpg)
+
+Come back to the SSH terminal, enter your account wallet and hit **Enter**
+
+![C2-near-login-5.jpg](/images/C2-near-login-5.jpg)
+
+![C2-near-login-6.jpg](/images/C2-near-login-6.jpg)
+
+when **successfully**, Hooyah! we are good to go.
+
+**Check the _validator_key.json_**
+```
+cat ~/.near/validator_key.json
+```
+> ***NOTE:*** If a validator_key.json is not present, follow these steps to create one
+
+Create a `validator_key.json`
+
+* Generate the Key file:
+```
+near generate-key <pool_id>
+```
+Replace the <pool_id> with your pool ID, for example
+```
+near generate-key duyld2108.factory.shardnet.near
+```
+![C2-create-validator-key-json.jpg](/images/C2-create-validator-key-json.jpg)
+
+* Copy the file generated to shardnet folder:
+Make sure to replace <pool_id> by your accountId
+```
+cp ~/.near-credentials/shardnet/YOUR_WALLET.json ~/.near/validator_key.json
+```
+For example:
+```
+cp ~/.near-credentials/shardnet/duyld2108.shardnet.near.json ~/.near/validator_key.json
+```
+![C2-create-validator-key-json-2.jpg](/images/C2-create-validator-key-json-2.jpg)
+
+Next, edit the `validator_key.json` as below:
+* Edit “account_id” => xx.factory.shardnet.near, where xx is your PoolName
+* Change `private_key` to `secret_key`
+Use this command:
+```
+sudo nano ~/.near/validator_key.json
+```
+![C2-edit-validator-key.jpg](/images/C2-edit-validator-key.jpg)
+
+change to this
+
+![C2-edit-validator-key-2.jpg](/images/C2-edit-validator-key-2.jpg)
+
+and this
+
+![C2-edit-validator-key-3.jpg](/images/C2-edit-validator-key-3.jpg)
+
+then hit **Ctrl + O** to write out and hit **Ctrl + X** to exit
+
+**Now setup System Command**
